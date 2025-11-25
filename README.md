@@ -10,4 +10,4 @@ The durability of the whistle and the distance your horse can teleport are both 
 
 This is my first mod, I'd love feedback. Feel free to reach out with questions or comments!
 
-You can view this mod on Modrinth [here](https://modrinth.com/mod/horse-whistle).
+You can view this mod on Modrinth [here](https://modrinth.com/mod/horse-whistle-reborn/).
