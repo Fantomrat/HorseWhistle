@@ -1,5 +1,10 @@
 {
-  "item.horse_whistle.horse_whistle_item": "Horse Whistle",
+  "item.horse_whistle.horse_whistle": "Horse Whistle",
+
+  "text.item.horse_whistle.remove_attunement": "§aRemoved attunement from %s",
+  "text.item.horse_whistle.add_attunement": "§aAttuned whistle to %s",
+  "text.item.horse_whistle.could_not_find_horse": "§cCould not find %s",
+  "text.item.horse_whistle.not_owner": "§cYou are not the owner of the horse",
 
   "text.config.horse-whistle-config.option.searchRadius": "Search Radius",
   "text.config.horse-whistle-config.option.searchRadius.tooltip": "The radius around the player in which to search for your horse. Default is 500",

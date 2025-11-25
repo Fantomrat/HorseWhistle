@@ -3,10 +3,7 @@ package io.github.jbossjaslow.horse_whistle.config;
 import blue.endless.jankson.Jankson;
 import io.wispforest.owo.config.ConfigWrapper;
 import io.wispforest.owo.config.Option;
-import io.wispforest.owo.util.Observable;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 
 public class HorseWhistleConfig extends ConfigWrapper<io.github.jbossjaslow.horse_whistle.config.ConfigModel> {

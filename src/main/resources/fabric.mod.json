@@ -1,42 +1,42 @@
 {
-	"schemaVersion": 1,
-	"id": "horse_whistle",
-	"version": "${version}",
-	"name": "Horse Whistle",
-	"description": "A whistle that can summon your horse from anywhere in the world.",
-	"authors": [
-		"Jboss"
-	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/jbossjaslow/HorseWhistle"
-	},
-	"license": "Apache",
-	"icon": "assets/horse_whistle/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"io.github.jbossjaslow.horse_whistle.HorseWhistle"
-		],
-		"client": [
-			"io.github.jbossjaslow.horse_whistle.HorseWhistleClient"
-		]
-	},
-	"mixins": [
-		"horse_whistle.mixins.json",
-		{
-			"config": "horse_whistle.client.mixins.json",
-			"environment": "client"
-		}
-	],
-	"depends": {
-		"fabricloader": ">=0.15.0",
-		"minecraft": "~1.20.4",
-		"java": ">=17",
-		"fabric-api": "*",
-		"owo-lib": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
-	}
+  "schemaVersion": 1,
+  "id": "horse_whistle",
+  "version": "${version}",
+  "name": "Horse Whistle",
+  "description": "A whistle that can summon your horse from anywhere in the world.",
+  "authors": [
+    "Jboss"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/jbossjaslow/HorseWhistle"
+  },
+  "license": "Apache",
+  "icon": "assets/horse_whistle/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.jbossjaslow.horse_whistle.HorseWhistle"
+    ],
+    "client": [
+      "io.github.jbossjaslow.horse_whistle.HorseWhistleClient"
+    ]
+  },
+  "mixins": [
+    "horse_whistle.mixins.json",
+    {
+      "config": "horse_whistle.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.17.0",
+    "minecraft": "~1.21.10",
+    "java": ">=21",
+    "fabric-api": "*",
+    "owo-lib": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
 }
