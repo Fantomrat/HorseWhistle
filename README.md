@@ -1,4 +1,6 @@
-# Horse Whistle Mod for Minecraft 1.20.4
+# Horse Whistle Reborn Mod for Minecraft 1.21.10
+
+Fork of [Horse Whistle](https://modrinth.com/mod/horse-whistle) mod by jbossjaslow
 
 This mod adds a horse whistle item. When used on your tamed horse, it registers that horse to the whistle. Then, you can right click again to summon your horse to you. If you wish to disconnect this item from the horse, simply crouch+right click. This item can be enchanted!
 
