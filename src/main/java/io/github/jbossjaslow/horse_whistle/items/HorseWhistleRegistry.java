@@ -7,25 +7,23 @@ import net.fabricmc.fabric.api.item.v1.ComponentTooltipAppenderRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
-import net.minecraft.component.ComponentType;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroups;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Rarity;
-
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import java.util.function.Function;
 
 public class HorseWhistleRegistry {
 
-    public static final ComponentType<AttunedHorseComponent> ATTUNED_HORSE =
-            ComponentType.<AttunedHorseComponent>builder()
-                    .codec(
+    public static final DataComponentType<AttunedHorseComponent> ATTUNED_HORSE =
+            DataComponentType.<AttunedHorseComponent>builder()
+                    .persistent(
                             RecordCodecBuilder.create(instance -> instance.group(
                                     Codec.STRING.fieldOf("horse_id").forGetter(AttunedHorseComponent::horseId),
                                     Codec.STRING.fieldOf("horse_name").forGetter(AttunedHorseComponent::horseName)
@@ -33,28 +31,28 @@ public class HorseWhistleRegistry {
                     )
                     .build();
 
-    public static final Item HORSE_WHISTLE_ITEM = register("horse_whistle", HorseWhistleItem::new, new Item.Settings().maxDamage(HorseWhistle.CONFIG.durability()).rarity(Rarity.RARE));
+    public static final Item HORSE_WHISTLE_ITEM = register("horse_whistle", HorseWhistleItem::new, new Item.Properties().durability(HorseWhistle.CONFIG.durability()).rarity(Rarity.RARE));
 
-    public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {
-        RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Identifier.of(HorseWhistle.MOD_ID, name));
+    public static Item register(String name, Function<Item.Properties, Item> itemFactory, Item.Properties settings) {
+        ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(HorseWhistle.MOD_ID, name));
 
-        Item item = itemFactory.apply(settings.registryKey(itemKey));
+        Item item = itemFactory.apply(settings.setId(itemKey));
 
-        return Registry.register(Registries.ITEM, itemKey, item);
+        return Registry.register(BuiltInRegistries.ITEM, itemKey, item);
     }
 
     public static void init() {
-        Registry.register(Registries.DATA_COMPONENT_TYPE, id("attuned_horse"), ATTUNED_HORSE);
-        ComponentTooltipAppenderRegistry.addAfter(DataComponentTypes.DAMAGE, ATTUNED_HORSE);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, id("attuned_horse"), ATTUNED_HORSE);
+        ComponentTooltipAppenderRegistry.addAfter(DataComponents.DAMAGE, ATTUNED_HORSE);
 
 
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(entries -> {
-            entries.add(HORSE_WHISTLE_ITEM);
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
+            entries.accept(HORSE_WHISTLE_ITEM);
         });
 
     }
 
     public static Identifier id(String path) {
-        return Identifier.of(HorseWhistle.MOD_ID, path);
+        return Identifier.fromNamespaceAndPath(HorseWhistle.MOD_ID, path);
     }
 }

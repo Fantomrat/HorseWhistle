@@ -1,12 +1,8 @@
 package io.github.jbossjaslow.horse_whistle.config;
 
-import blue.endless.jankson.Jankson;
-import io.wispforest.owo.config.ConfigWrapper;
-import io.wispforest.owo.config.Option;
-
 import java.util.function.Consumer;
 
-public class HorseWhistleConfig extends ConfigWrapper<io.github.jbossjaslow.horse_whistle.config.ConfigModel> {
+public class HorseWhistleConfig{
 
     public final Keys keys = new Keys();
 

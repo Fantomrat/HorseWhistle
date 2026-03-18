@@ -1,12 +1,12 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "___",
+    "BBB",
     "ASE",
-    "___"
+    "BBB"
   ],
   "key": {
-    "_": {
+    "B": {
       "item": "minecraft:oak_slab"
     },
     "A": {

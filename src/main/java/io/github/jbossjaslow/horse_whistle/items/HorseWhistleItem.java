@@ -1,21 +1,22 @@
 package io.github.jbossjaslow.horse_whistle.items;
 
 import io.github.jbossjaslow.horse_whistle.HorseWhistle;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.HorseEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.*;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.World;
-
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.animal.equine.Horse;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import java.util.List;
 
 public class HorseWhistleItem extends Item {
@@ -30,46 +31,46 @@ public class HorseWhistleItem extends Item {
 	##################################################
 	 */
 
-    public HorseWhistleItem(Item.Settings settings) {
+    public HorseWhistleItem(Item.Properties settings) {
         super(settings);
     }
 
 
     @Override
-    public ActionResult use(World world, PlayerEntity user, Hand hand) {
+    public InteractionResult use(Level world, Player user, InteractionHand hand) {
         super.use(world, user, hand);
 
-        ItemStack stack = user.getStackInHand(hand);
+        ItemStack stack = user.getItemInHand(hand);
 
-        if (user.getEntityWorld().isClient()) return ActionResult.FAIL;
+        if (user.level().isClientSide()) return InteractionResult.FAIL;
 
-        if (user.getPose() == EntityPose.CROUCHING) {
-            if (stack.getComponents().contains(HorseWhistleRegistry.ATTUNED_HORSE)) {
+        if (user.getPose() == Pose.CROUCHING) {
+            if (stack.getComponents().has(HorseWhistleRegistry.ATTUNED_HORSE)) {
                 var component = stack.get(HorseWhistleRegistry.ATTUNED_HORSE);
 
                 assert component != null;
                 String horseName = component.horseName();
 
-                user.sendMessage(Text.translatable("text.item.horse_whistle.remove_attunement", horseName), true);
+                user.displayClientMessage(Component.translatable("text.item.horse_whistle.remove_attunement", horseName), true);
 
                 stack.remove(HorseWhistleRegistry.ATTUNED_HORSE);
 
                 world.playSound(
                         null,
-                        user.getBlockPos(),
-                        SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP,
-                        SoundCategory.MASTER,
+                        user.blockPosition(),
+                        SoundEvents.EXPERIENCE_ORB_PICKUP,
+                        SoundSource.MASTER,
                         0.5f,
                         0.5f
                 );
-                return ActionResult.CONSUME;
-            } else return ActionResult.PASS;
+                return InteractionResult.CONSUME;
+            } else return InteractionResult.PASS;
         }
 
-        if (stack.getComponents().contains(HorseWhistleRegistry.ATTUNED_HORSE)) {
-            user.getItemCooldownManager().set(stack, ITEM_COOLDOWN);
+        if (stack.getComponents().has(HorseWhistleRegistry.ATTUNED_HORSE)) {
+            user.getCooldowns().addCooldown(stack, ITEM_COOLDOWN);
 
-            stack.damage(1, user);
+            stack.hurtWithoutBreaking(1, user);
 
             var component = stack.get(HorseWhistleRegistry.ATTUNED_HORSE);
             assert component != null;
@@ -78,7 +79,7 @@ public class HorseWhistleItem extends Item {
 
             // Поиск лошади по UUID
             double radius = HorseWhistle.CONFIG.searchRadius();
-            Box searchArea = new Box(
+            AABB searchArea = new AABB(
                     user.getX() - radius,
                     user.getY() - radius,
                     user.getZ() - radius,
@@ -87,52 +88,52 @@ public class HorseWhistleItem extends Item {
                     user.getZ() + radius
             );
 
-            List<HorseEntity> horses = world.getEntitiesByType(
+            List<Horse> horses = world.getEntities(
                     EntityType.HORSE,
                     searchArea,
-                    EntityPredicates.VALID_LIVING_ENTITY
+                    EntitySelector.LIVING_ENTITY_STILL_ALIVE
             );
 
-            for (HorseEntity horse : horses) {
-                if (horse.getUuidAsString().equals(horseId)) {
+            for (Horse horse : horses) {
+                if (horse.getStringUUID().equals(horseId)) {
                     teleportHorse(horse, user, world);
-                    return ActionResult.CONSUME;
+                    return InteractionResult.CONSUME;
                 }
             }
 
-            user.sendMessage(Text.translatable("text.item.horse_whistle.could_not_find_horse", horseName), true);
+            user.displayClientMessage(Component.translatable("text.item.horse_whistle.could_not_find_horse", horseName), true);
 
         }
 
-        return ActionResult.FAIL;
+        return InteractionResult.FAIL;
     }
 
     @Override
-    public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
-        super.useOnEntity(stack, user, entity, hand);
-        user.getItemCooldownManager().set(stack, ITEM_COOLDOWN);
+    public InteractionResult interactLivingEntity(ItemStack stack, Player user, LivingEntity entity, InteractionHand hand) {
+        super.interactLivingEntity(stack, user, entity, hand);
+        user.getCooldowns().addCooldown(stack, ITEM_COOLDOWN);
 
         // We cannot be on the client to check the UUID of the player
-        if (user.getEntityWorld().isClient()) return ActionResult.FAIL;
+        if (user.level().isClientSide()) return InteractionResult.FAIL;
 
-        if (entity.getType() != EntityType.HORSE || stack.getComponents().contains(HorseWhistleRegistry.ATTUNED_HORSE))
-            return ActionResult.PASS;
+        if (entity.getType() != EntityType.HORSE || stack.getComponents().has(HorseWhistleRegistry.ATTUNED_HORSE))
+            return InteractionResult.PASS;
 
-        HorseEntity horseEntity = (HorseEntity) entity;
+        Horse horseEntity = (Horse) entity;
 
-        if (horseEntity.isTame() && horseEntity.isTame()) {
-            if (horseEntity.getOwner() == null || horseEntity.getOwner().getUuid() != user.getUuid()) {
-                user.sendMessage(Text.translatable("text.item.horse_whistle.not_owner"), true);
-                return ActionResult.CONSUME;
+        if (horseEntity.isTamed() && horseEntity.isTamed()) {
+            if (horseEntity.getOwner() == null || horseEntity.getOwner().getUUID() != user.getUUID()) {
+                user.displayClientMessage(Component.translatable("text.item.horse_whistle.not_owner"), true);
+                return InteractionResult.CONSUME;
             }
 
 
 
-            user.getEntityWorld().playSound(
+            user.level().playSound(
                     null,
-                    user.getBlockPos(),
-                    SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP,
-                    SoundCategory.MASTER,
+                    user.blockPosition(),
+                    SoundEvents.EXPERIENCE_ORB_PICKUP,
+                    SoundSource.MASTER,
                     0.5f,
                     0.5f);
 
@@ -140,23 +141,23 @@ public class HorseWhistleItem extends Item {
                     ? horseEntity.getCustomName().getString()
                     : horseEntity.getName().getString();
 
-            String horseId = horseEntity.getUuidAsString();
+            String horseId = horseEntity.getStringUUID();
 
             stack.set(
                     HorseWhistleRegistry.ATTUNED_HORSE,
                     new AttunedHorseComponent(horseId, horseName)
             );
 
-            user.sendMessage(Text.translatable("text.item.horse_whistle.add_attunement", horseName), true);
-            return ActionResult.SUCCESS;
+            user.displayClientMessage(Component.translatable("text.item.horse_whistle.add_attunement", horseName), true);
+            return InteractionResult.SUCCESS;
         } else {
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         }
     }
 
     @Override
-    public boolean hasGlint(ItemStack stack) {
-        return super.hasGlint(stack) || stack.getComponents().contains(HorseWhistleRegistry.ATTUNED_HORSE);
+    public boolean isFoil(ItemStack stack) {
+        return super.isFoil(stack) || stack.getComponents().has(HorseWhistleRegistry.ATTUNED_HORSE);
     }
 
 	/*
@@ -167,7 +168,7 @@ public class HorseWhistleItem extends Item {
 	##################################################
 	 */
 
-    private void teleportHorse(HorseEntity horse, PlayerEntity player, World world) {
+    private void teleportHorse(Horse horse, Player player, Level world) {
         double xPos = player.getX();
         double yPos = player.getY();
         double zPos = player.getZ();
@@ -176,12 +177,12 @@ public class HorseWhistleItem extends Item {
         int randomX = horse.getRandom().nextInt(10) - 5;
         int randomZ = horse.getRandom().nextInt(10) - 5;
 
-        horse.teleport(xPos + randomX, yPos, zPos + randomZ, false);
+        horse.randomTeleport(xPos + randomX, yPos, zPos + randomZ, false);
         world.playSound(
                 null,
-                player.getBlockPos(),
-                SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT,
-                SoundCategory.MASTER,
+                player.blockPosition(),
+                SoundEvents.CHORUS_FRUIT_TELEPORT,
+                SoundSource.MASTER,
                 1f,
                 1f);
     }
