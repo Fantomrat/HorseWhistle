@@ -5,10 +5,17 @@
   "text.item.horse_whistle.add_attunement": "§aAttuned whistle to %s",
   "text.item.horse_whistle.could_not_find_horse": "§cCould not find %s",
   "text.item.horse_whistle.not_owner": "§cYou are not the owner of the horse",
+  "text.item.horse_whistle.impossible_to_teleport_horse": "§cImpossible to teleport %s §chere",
 
-  "text.config.horse-whistle-config.option.searchRadius": "Search Radius",
-  "text.config.horse-whistle-config.option.searchRadius.tooltip": "The radius around the player in which to search for your horse. Default is 500",
+  "text.config.horse_whistle.search_radius": "Search Radius",
+  "text.config.horse_whistle.search_radius.tooltip": "The radius around the player in which to search for your horse. Default is 500",
 
-  "text.config.horse-whistle-config.option.durability": "Item durability",
-  "text.config.horse-whistle-config.option.durability.tooltip": "The base durability of the Horse Whistle item. Default is 16"
+  "text.config.horse_whistle.durability": "Item Durability",
+  "text.config.horse_whistle.durability.tooltip": "The base durability of the Horse Whistle item. Default is 16",
+
+  "text.config.horse_whistle.teleport_radius": "Teleport Radius",
+  "text.config.horse_whistle.teleport_radius.tooltip": "The radius around the player that horse teleports to. Default is 8",
+
+  "text.config.horse_whistle.item_cooldown": "Item Cooldown",
+  "text.config.horse_whistle.item_cooldown.tooltip": "Time (in ticks) before the item can be used again. Default is 20"
 }

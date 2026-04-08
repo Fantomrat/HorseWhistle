@@ -16,27 +16,23 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "io.github.jbossjaslow.horse_whistle.HorseWhistle"
+      "io.github.jbossjaslow.horse_whistle.HorseWhistleFabric"
     ],
-    "client": [
-      "io.github.jbossjaslow.horse_whistle.HorseWhistleClient"
+    "modmenu": [
+      "io.github.jbossjaslow.horse_whistle.config.ModMenuIntegration"
     ]
   },
   "mixins": [
-    "horse_whistle.mixins.json",
-    {
-      "config": "horse_whistle.client.mixins.json",
-      "environment": "client"
-    }
+    "horse_whistle.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.17.0",
-    "minecraft": "~1.21.10",
-    "java": ">=21",
+    "fabricloader": ">=0.18.0",
+    "minecraft": "~26.1",
+    "java": ">=25",
     "fabric-api": "*",
-    "owo-lib": "*"
+    "cloth-config": ">=26.1.154"
   },
   "suggests": {
-    "another-mod": "*"
+    "modmenu": "*"
   }
 }

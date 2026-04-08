@@ -7,16 +7,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipProvider;
+import org.jspecify.annotations.NonNull;
 
 public record AttunedHorseComponent(String horseId, String horseName)
         implements TooltipProvider {
 
     @Override
     public void addToTooltip(
-            Item.TooltipContext context,
+            Item.@NonNull TooltipContext context,
             Consumer<Component> textConsumer,
-            TooltipFlag type,
-            DataComponentGetter components
+            @NonNull TooltipFlag type,
+            @NonNull DataComponentGetter components
     ) {
         textConsumer.accept(Component.literal("Attuned to " + horseName).withStyle(ChatFormatting.GRAY));
     }

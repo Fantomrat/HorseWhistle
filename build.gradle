@@ -1,5 +1,6 @@
 plugins {
-	id 'fabric-loom' version '1.13-SNAPSHOT'
+	id 'net.fabricmc.fabric-loom' version '1.15-SNAPSHOT'
+	id "me.modmuss50.mod-publish-plugin" version "1.1.0"
 	id 'maven-publish'
 }
 
@@ -17,34 +18,35 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 
-    maven { url 'https://maven.wispforest.io/releases/' }
+	maven { url "https://maven.shedaniel.me/" }
+	maven { url "https://maven.terraformersmc.com/releases/" }
+	maven {
+		name = "NeoForge"
+		url = uri("https://maven.neoforged.net/releases/")
+		content {
+			includeGroupAndSubgroups("net.neoforged")
+			includeGroupAndSubgroups("cpw.mods")
+			includeGroupAndSubgroups("net.minecraftforge")
+		}
+	}
 }
 
 loom {
-    splitEnvironmentSourceSets()
-
-	mods {
-		"horse_whistle" {
-			sourceSet sourceSets.main
-			sourceSet sourceSets.client
-		}
-	}
 
 }
 
 dependencies {
-	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	
-	// Uncomment the following line to enable the deprecated Fabric API modules. 
-	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
+	api "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_api}"
+
+	compileOnly "com.terraformersmc:modmenu:${project.modmenu}"
+
+	compileOnly ("net.neoforged:neoforge:${project.neoforge_version}:universal")
+	compileOnly ("net.neoforged.fancymodloader:loader:${project.neoforge_loader_version}")
 }
 
 processResources {
@@ -53,20 +55,26 @@ processResources {
 	filesMatching("fabric.mod.json") {
 		expand "version": project.version
 	}
+
+	filesMatching("META-INF/neoforge.mods.toml") {
+		expand (
+				"mod_version": project.version,
+				"mod_id": project.archives_base_name,
+				"mod_name": project.mod_name,
+				"mod_license": project.mod_license
+		)
+	}
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
+	it.options.release = 25
 }
 
 java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
 	// withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
 }
 
 jar {
@@ -75,7 +83,6 @@ jar {
 	}
 }
 
-// configure the maven publication
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
@@ -89,5 +96,29 @@ publishing {
 		// Notice: This block does NOT have the same function as the block in the top level.
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
+	}
+}
+
+publishMods {
+	file = jar.archiveFile
+
+	var changelogText = project.findProperty("releaseChangelog") ?: ""
+	changelog = changelogText
+
+	type = STABLE
+	modLoaders.add("fabric")
+	modLoaders.add("neoforge")
+
+	curseforge {
+		projectId = "1507719"
+		accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
+		minecraftVersions.add("26.1")
+		minecraftVersions.add("26.1.1")
+	}
+	modrinth {
+		projectId = "3hxQUw0G"
+		accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+		minecraftVersions.add("26.1")
+		minecraftVersions.add("26.1.1")
 	}
 }

@@ -6,21 +6,13 @@
     "BBB"
   ],
   "key": {
-    "B": {
-      "item": "minecraft:oak_slab"
-    },
-    "A": {
-      "item": "minecraft:apple"
-    },
-    "S": {
-      "item": "minecraft:saddle"
-    },
-    "E": {
-      "item": "minecraft:ender_pearl"
-    }
+    "B": ["minecraft:oak_slab"],
+    "A": ["minecraft:apple"],
+    "S": ["minecraft:saddle"],
+    "E": ["minecraft:ender_pearl"]
   },
   "result": {
-    "item": "horse_whistle:horse_whistle",
+    "id": "horse_whistle:horse_whistle",
     "count": 1
   }
 }

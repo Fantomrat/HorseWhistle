@@ -3,7 +3,6 @@
 	"package": "io.github.jbossjaslow.horse_whistle.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"ExampleMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -1,0 +1,45 @@
+license="${mod_license}"
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+
+# A URL to query for updates for this mod. See the JSON update specification https://docs.neoforged.net/docs/misc/updatechecker/
+#updateJSONURL="https://change.me.example.invalid/updates.json" #optional
+
+# A URL for the "homepage" for this mod, displayed in the mod UI
+#displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
+
+# A file name (in the root of the mod JAR) containing a logo for display
+#logoFile="examplemod.png" #optional
+
+# A text field displayed in the mod UI
+#credits="" #optional
+
+# The authors of the mod, displayed in the mod UI (optional)
+#authors=""
+
+# The description text for the mod (multi line!) (#mandatory)
+description='''
+Example mod description.
+'''
+
+[[dependencies.${mod_id}]]
+modId="neoforge"
+type="required"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="minecraft"
+type="required"
+versionRange="[26.1,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="cloth_config"
+type="required"
+versionRange="[26.1.154,)"
+ordering="NONE"
+side="BOTH"
